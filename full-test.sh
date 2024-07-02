@@ -30,7 +30,7 @@ fi
 # additional tests
 if [ -f conf/assignment.txt ]; then
     # This is just one example of how you could find an associated assignment
-    assignment=`cat conf/assignment.txt`
+    assignment=$(cat conf/assignment.txt)
     if [ -f ./assignment-autotest/test/${assignment}/assignment-test.sh ]; then
         echo "Executing assignment test script"
         ./assignment-autotest/test/${assignment}/assignment-test.sh $test_dir
@@ -46,7 +46,14 @@ if [ -f conf/assignment.txt ]; then
         exit 1
     fi
 else
-    echo "Missing conf/assignment.txt, no assignment to run"
-    exit 1
+    echo "Run ./full-test.sh"
+    ./full-test.sh
+    full_test_rc=$?
+    if [ $full_test_rc -ne 0 ]; then
+        echo "Full test failed with rc=${full_test_rc}"
+        exit $full_test_rc
+    fi
 fi
-exit ${unit_test_rc}
+
+exit $full_test_rc
+
